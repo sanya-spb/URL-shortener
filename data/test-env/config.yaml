@@ -1,0 +1,8 @@
+# Output of detailed debugging information (default: false)
+# debug: false
+
+# Log file for user input (default: ./data/access.log)
+# log_access: "./data/test-env/access.log"
+
+# Log file for errors (default: ./data/errors.log)
+# log_errors: "./data/test-env/errors.log"

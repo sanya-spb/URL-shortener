@@ -13,3 +13,15 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# GoLand IDE
+.idea/
+
+# builded binary files
+cmd/test-env/test-env
+
+# app logs
+data/access.log
+data/errors.log
+data/*/access.log
+data/*/errors.log
