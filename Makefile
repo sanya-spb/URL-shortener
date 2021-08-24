@@ -24,7 +24,7 @@ build:
 
 ## check: Run linters
 check:
-	golangci-lint -c ./golangci-lint.yaml run
+	golangci-lint -c ./.golangci.yml run
 
 ## run: Run application
 run: check test build
