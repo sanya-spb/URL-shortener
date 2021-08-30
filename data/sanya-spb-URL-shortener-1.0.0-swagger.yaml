@@ -1,0 +1,133 @@
+openapi: 3.0.0
+servers: []
+info:
+  description: This is a simple API for GB/Go Backend level1
+  version: "1.0.0"
+  title: URL-shortener
+  contact:
+    email: sanya-spb@mail.ru
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /go:
+    get:
+      tags:
+        - developers
+      summary: go to source link
+      operationId: goTo
+      description: |
+        By passing in the appropriate options, you can move external www source
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up inventory
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: found, go to source
+        '400':
+          description: bad input parameter
+  /add:
+    put:
+      tags:
+        - admins
+      summary: adds an inventory item
+      operationId: addInventory
+      description: Adds an item to the system
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Link'
+        description: Inventory item to add
+  /stat:
+    get:
+      tags:
+        - developers
+      summary: get statistic
+      operationId: getStat
+      description: |
+        By passing in the appropriate options, you can get stats for using URL-shorterner
+      parameters:
+        - in: query
+          name: q
+          description: pass an optional search string for looking up inventory
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: found, see stat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stat'
+        '400':
+          description: bad input parameter
+
+components:
+  schemas:
+    Link:
+      type: object
+      required:
+        - href
+        - shortLink
+        - name
+        - user
+        - removeAfter
+      properties:
+        href:
+          type: string
+          format: url
+          example: 'https://google.com/index.html'
+        shortLink:
+          type: string
+          format: url
+          example: 'https://gb.7bit.xyz/wohv7Boh'
+        name:
+          type: string
+          example: Google main page
+        removeAfter:
+          type: string
+          format: date-time
+          example: '2031-08-29T09:12:33.001Z'
+        user:
+          $ref: '#/components/schemas/User'
+    User:
+      required:
+        - nickname
+      properties:
+        nickname:
+          type: string
+          example: James Fenimore Cooper
+    Stat:
+      required:
+        - link
+        - redirects
+      properties:
+        link:
+           $ref: '#/components/schemas/Link'
+        redirects:
+          type: integer
+          format: uint64
+          example: 65536
+      type: array
+      items:
+        allOf:
+          - $ref: '#/components/schemas/Link'
+          - type: integer
