@@ -85,28 +85,42 @@ components:
     Link:
       type: object
       required:
-        - href
-        - shortLink
-        - name
-        - user
-        - removeAfter
+        - ID
+        - URL
+        - Name
+        - Descr
+        - ShortLink
+        - CreatedAt
+        - DeleteAt
+        - User
       properties:
-        href:
+        ID:
+          type: string
+          format: uuid
+          example: '123e4567-e89b-12d3-a456-426655440000'
+        URL:
           type: string
           format: url
           example: 'https://google.com/index.html'
-        shortLink:
+        Name:
+          type: string
+          example: Google
+        Descr:
+          type: string
+          example: Google main page
+        ShortLink:
           type: string
           format: url
           example: 'https://gb.7bit.xyz/wohv7Boh'
-        name:
-          type: string
-          example: Google main page
-        removeAfter:
+        CreatedAt:
           type: string
           format: date-time
           example: '2031-08-29T09:12:33.001Z'
-        user:
+        DeleteAt:
+          type: string
+          format: date-time
+          example: '2031-08-29T09:12:33.001Z'
+        User:
           $ref: '#/components/schemas/User'
     User:
       required:
