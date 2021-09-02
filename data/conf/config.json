@@ -1,6 +1,6 @@
 {
     "_comment": "в JSON не предусмотрены комментарии",
     "debug": false,
-    "log_access": "./data/test-env/access.log",
-    "log_errors": "./data/test-env/errors.log"
+    "log_access": "./data/logs/access.log",
+    "log_errors": "./data/logs/errors.log"
 }

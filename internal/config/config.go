@@ -63,8 +63,8 @@ func NewConfig() *Config {
 	flag.BoolVar(&result.Debug, "debug", GetEnvBool("DEBUG", false), "Output of detailed debugging information")
 	// flag.BoolVar(&result.BatchMode, "batch", GetEnvBool("BATCH", false), "Run in batch/no interactive mode")
 	// flag.StringVar(&result.DataFile, "data", GetEnv("DATA", ""), "The path to the file *.scv with data (recuired)")
-	flag.StringVar(&result.LogAccess, "log-access", GetEnv("LOG_ACCESS", "./data/access.log"), "Log file for user input")
-	flag.StringVar(&result.LogErrors, "log-errors", GetEnv("LOG_ERRORS", "./data/errors.log"), "Log file for errors")
+	flag.StringVar(&result.LogAccess, "log-access", GetEnv("LOG_ACCESS", "./data/logs/access.log"), "Log file")
+	flag.StringVar(&result.LogErrors, "log-errors", GetEnv("LOG_ERRORS", "./data/logs/errors.log"), "Log file for errors")
 	// flag.Uint64Var(&result.FilterTimeout, "filter-timeout", GetEnvUInt("FILTER_TIMEOUT", 1000), "Timeout to filtering data, ms")
 	flag.Parse()
 

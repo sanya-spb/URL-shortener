@@ -19,9 +19,7 @@
 
 # builded binary files
 cmd/test-env/test-env
+cmd/url-shortener/url-shortener
 
 # app logs
-data/access.log
-data/errors.log
-data/*/access.log
-data/*/errors.log
+data/logs/*.log
