@@ -1,6 +1,9 @@
 # Output of detailed debugging information (default: false)
 # debug: false
 
+# listen addr:port (default: ":80")
+listen: ":8181"
+
 # Log file for (default: ./data/logs/access.log)
 log_access: "./data/logs/access.log"
 

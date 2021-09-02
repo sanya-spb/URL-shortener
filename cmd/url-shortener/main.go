@@ -50,7 +50,7 @@ func main() {
 
 	links := links.NewLinks(store)
 	hRouter := handler.NewRouter(links)
-	srv := server.NewServer(":80", hRouter)
+	srv := server.NewServer(app.Config.Listen, hRouter)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)

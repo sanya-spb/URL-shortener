@@ -1,6 +1,7 @@
 {
     "_comment": "в JSON не предусмотрены комментарии",
     "debug": false,
+    "listen": ":8181",
     "log_access": "./data/logs/access.log",
     "log_errors": "./data/logs/errors.log"
 }

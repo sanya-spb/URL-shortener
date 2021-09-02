@@ -16,12 +16,10 @@ import (
 // configuration struct
 type Config struct {
 	ConfigFile string
-	Debug      bool `toml:"debug" yaml:"debug" json:"debug"`
-	// BatchMode     bool   `toml:"batch" yaml:"batch" json:"batch"`
-	// DataFile      string `toml:"data_file" yaml:"data_file" json:"data_file"`
-	// FilterTimeout uint64 `toml:"filter_timeout" yaml:"filter_timeout" json:"filter_timeout"`
-	LogAccess string `toml:"log_access" yaml:"log_access" json:"log_access"`
-	LogErrors string `toml:"log_errors" yaml:"log_errors" json:"log_errors"`
+	Debug      bool   `toml:"debug" yaml:"debug" json:"debug"`
+	Listen     string `toml:"listen" yaml:"listen" json:"listen"`
+	LogAccess  string `toml:"log_access" yaml:"log_access" json:"log_access"`
+	LogErrors  string `toml:"log_errors" yaml:"log_errors" json:"log_errors"`
 }
 
 // loading configuration parameters from a file
@@ -61,8 +59,7 @@ func NewConfig() *Config {
 	var result *Config = new(Config)
 	flag.StringVar(&result.ConfigFile, "config", GetEnv("CONFIG", ""), "Configuration settings file")
 	flag.BoolVar(&result.Debug, "debug", GetEnvBool("DEBUG", false), "Output of detailed debugging information")
-	// flag.BoolVar(&result.BatchMode, "batch", GetEnvBool("BATCH", false), "Run in batch/no interactive mode")
-	// flag.StringVar(&result.DataFile, "data", GetEnv("DATA", ""), "The path to the file *.scv with data (recuired)")
+	flag.StringVar(&result.Listen, "listen", GetEnv("LISTEN", ":80"), "listen addr:port")
 	flag.StringVar(&result.LogAccess, "log-access", GetEnv("LOG_ACCESS", "./data/logs/access.log"), "Log file")
 	flag.StringVar(&result.LogErrors, "log-errors", GetEnv("LOG_ERRORS", "./data/logs/errors.log"), "Log file for errors")
 	// flag.Uint64Var(&result.FilterTimeout, "filter-timeout", GetEnvUInt("FILTER_TIMEOUT", 1000), "Timeout to filtering data, ms")
