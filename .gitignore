@@ -16,6 +16,7 @@
 
 # GoLand IDE
 .idea/
+.vscode/
 
 # builded binary files
 cmd/test-env/test-env
