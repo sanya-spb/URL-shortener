@@ -28,44 +28,13 @@
     }
   ],
   "paths": {
-    "/go": {
-      "get": {
-        "tags": [
-          "developers"
-        ],
-        "summary": "go to source link",
-        "description": "By passing in the appropriate options, you can move external www source\n",
-        "operationId": "goTo",
-        "parameters": [
-          {
-            "name": "q",
-            "in": "query",
-            "description": "pass an optional search string for looking up inventory",
-            "required": true,
-            "style": "form",
-            "explode": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "302": {
-            "description": "found, go to source"
-          },
-          "400": {
-            "description": "bad input parameter"
-          }
-        }
-      }
-    },
-    "/add": {
+    "/new": {
       "put": {
         "tags": [
           "admins"
         ],
         "summary": "adds an inventory item",
-        "description": "Adds an item to the system",
+        "description": "method Create (in CRUD spec)",
         "operationId": "addInventory",
         "requestBody": {
           "description": "Inventory item to add",
@@ -86,6 +55,150 @@
           },
           "409": {
             "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/update{uuid}": {
+      "put": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "adds an inventory item",
+        "description": "method Update (in CRUD spec)",
+        "operationId": "updInventory",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "pass an id for updating",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Inventory item to add",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Link"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "item updated successfully"
+          },
+          "400": {
+            "description": "invalid input, object invalid"
+          },
+          "409": {
+            "description": "an existing item already exists"
+          }
+        }
+      }
+    },
+    "/info/{uuid}": {
+      "get": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "get inventory item info",
+        "description": "method READ (in CRUD spec)",
+        "operationId": "getInventory",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "pass an id for looking up inventory",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "found, see info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Link"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad input parameter"
+          }
+        }
+      }
+    },
+    "/delete/{uuid}": {
+      "delete": {
+        "tags": [
+          "admins"
+        ],
+        "summary": "delete an inventory item",
+        "description": "method Delete (in CRUD spec)",
+        "operationId": "delInventory",
+        "parameters": [
+          {
+            "name": "uuid",
+            "in": "path",
+            "description": "pass an uuid to delete",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "item deleted"
+          },
+          "404": {
+            "description": "uuid not found"
+          }
+        }
+      }
+    },
+    "/go/{ls}": {
+      "get": {
+        "tags": [
+          "developers"
+        ],
+        "summary": "go to source link",
+        "description": "By passing in the appropriate options, you can move external www source\n",
+        "operationId": "goTo",
+        "parameters": [
+          {
+            "name": "ls",
+            "in": "path",
+            "description": "short link",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "found, go to source"
+          },
+          "400": {
+            "description": "bad input parameter"
           }
         }
       }

@@ -15,33 +15,13 @@ tags:
   - name: developers
     description: Operations available to regular developers
 paths:
-  /go:
-    get:
-      tags:
-        - developers
-      summary: go to source link
-      operationId: goTo
-      description: |
-        By passing in the appropriate options, you can move external www source
-      parameters:
-        - in: query
-          name: q
-          description: pass an optional search string for looking up inventory
-          required: true
-          schema:
-            type: string
-      responses:
-        '302':
-          description: found, go to source
-        '400':
-          description: bad input parameter
-  /add:
+  /new:
     put:
       tags:
         - admins
       summary: adds an inventory item
       operationId: addInventory
-      description: Adds an item to the system
+      description: method Create (in CRUD spec)
       responses:
         '201':
           description: item created
@@ -55,6 +35,96 @@ paths:
             schema:
               $ref: '#/components/schemas/Link'
         description: Inventory item to add
+  /update{uuid}:
+    put:
+      tags:
+        - admins
+      summary: adds an inventory item
+      operationId: updInventory
+      description: method Update (in CRUD spec)
+      parameters:
+        - in: path
+          name: uuid
+          description: pass an id for updating
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: item updated successfully
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Link'
+        description: Inventory item to add
+  /info/{uuid}:
+    get:
+      tags:
+        - admins
+      summary: get inventory item info
+      operationId: getInventory
+      description: method READ (in CRUD spec)
+      parameters:
+        - in: path
+          name: uuid
+          description: pass an id for looking up inventory
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: found, see info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Link'
+          # description: Inventory item info
+        '400':
+          description: bad input parameter
+  /delete/{uuid}:
+    delete:
+      tags:
+        - admins
+      summary: delete an inventory item
+      operationId: delInventory
+      description: method Delete (in CRUD spec)
+      parameters:
+        - in: path
+          name: uuid
+          description: pass an uuid to delete
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: item deleted
+        '404':
+          description: uuid not found
+  /go/{ls}:
+    get:
+      tags:
+        - developers
+      summary: go to source link
+      operationId: goTo
+      description: |
+        By passing in the appropriate options, you can move external www source
+      parameters:
+        - in: path
+          name: ls
+          description: short link
+          required: true
+          schema:
+            type: string
+      responses:
+        '302':
+          description: found, go to source
+        '400':
+          description: bad input parameter
   /stat:
     get:
       tags:
