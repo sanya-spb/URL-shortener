@@ -1,6 +1,8 @@
 package links
 
 import (
+	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -18,10 +20,12 @@ type TLinks struct {
 }
 
 type LinksStore interface {
-	// Create(ctx context.Context, u User) (*uuid.UUID, error)
-	// Read(ctx context.Context, uid uuid.UUID) (*User, error)
-	// Delete(ctx context.Context, uid uuid.UUID) error
-	// SearchUsers(ctx context.Context, s string) (chan User, error)
+	Create(ctx context.Context, l TLinks) (*uuid.UUID, error)
+	Read(ctx context.Context, lid uuid.UUID) (*TLinks, error)
+	// Update(ctx context.Context, lid uuid.UUID, l TLinks) error
+	Delete(ctx context.Context, lid uuid.UUID) error
+	// Go(ctx context.Context, sl string) error
+	// Stat(ctx context.Context, s string) (chan TLinks, error)
 }
 
 type Links struct {
@@ -32,4 +36,29 @@ func NewLinks(store LinksStore) *Links {
 	return &Links{
 		store: store,
 	}
+}
+
+func (link *Links) Create(ctx context.Context, l TLinks) (*TLinks, error) {
+	id, err := link.store.Create(ctx, l)
+	if err != nil {
+		return nil, fmt.Errorf("create link error: %w", err)
+	}
+	l.ID = *id
+	return &l, nil
+}
+
+func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*TLinks, error) {
+	l, err := link.store.Read(ctx, uid)
+	if err != nil {
+		return nil, fmt.Errorf("read link error: %w", err)
+	}
+	return l, nil
+}
+
+func (link *Links) Delete(ctx context.Context, uid uuid.UUID) (*TLinks, error) {
+	u, err := link.store.Read(ctx, uid)
+	if err != nil {
+		return nil, fmt.Errorf("delete link error: %w", err)
+	}
+	return u, link.store.Delete(ctx, uid)
 }

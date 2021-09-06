@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	"github.com/sanya-spb/URL-shortener/api/handler"
+	"github.com/sanya-spb/URL-shortener/api/router"
 	"github.com/sanya-spb/URL-shortener/api/server"
 	"github.com/sanya-spb/URL-shortener/app/repos/links"
 	"github.com/sanya-spb/URL-shortener/app/starter"
@@ -49,15 +50,16 @@ func main() {
 	app.Welcome()
 
 	links := links.NewLinks(store)
-	hRouter := handler.NewRouter(links)
-	srv := server.NewServer(app.Config.Listen, hRouter)
+	appHandler := handler.NewHandler(links)
+	appRouter := router.NewRouter(appHandler)
+	appServer := server.NewServer(app.Config.Listen, appRouter)
 
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 
 	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
-	log.Printf("listen at: %s\n", srv.Addr())
-	go app.Serve(ctx, wg, srv)
+	log.Printf("listen at: %s\n", appServer.Addr())
+	go app.Serve(ctx, wg, appServer)
 
 	<-ctx.Done()
 	cancel()
