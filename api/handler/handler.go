@@ -18,27 +18,14 @@ func NewHandler(links *links.Links) *Handler {
 	r := &Handler{
 		links: links,
 	}
-	// r.HandleFunc("/create", r.AuthMiddleware(http.HandlerFunc(r.CreateUser)).ServeHTTP)
-	// r.HandleFunc("/read", r.AuthMiddleware(http.HandlerFunc(r.ReadUser)).ServeHTTP)
-	// r.HandleFunc("/delete", r.AuthMiddleware(http.HandlerFunc(r.DeleteUser)).ServeHTTP)
-	// r.HandleFunc("/search", r.AuthMiddleware(http.HandlerFunc(r.SearchUser)).ServeHTTP)
 	return r
 }
 
 // TODO: пока берем из пакета links, потом решим что тут лишнее
-// type TLinks struct {
-// 	ID        uuid.UUID `json:"id"`
-// 	URL       string    `json:"url"`
-// 	Name      string    `json:"name"`
-// 	Descr     string    `json:"descr"`
-// 	ShortLink string    `json:"short_link"`
-// 	CreatedAt time.Time `json:"created_at"`
-// 	DeleteAt  time.Time `json:"delete_at"`
-// 	User      string    `json:"user"`
-// }
+type TLink links.TLink
 
-func (hHandler *Handler) Create(ctx context.Context, l links.TLinks) (links.TLinks, error) {
-	link := links.TLinks{
+func (hHandler *Handler) Create(ctx context.Context, l TLink) (TLink, error) {
+	link := links.TLink{
 		ID:        l.ID,
 		URL:       l.URL,
 		Name:      l.Name,
@@ -51,10 +38,10 @@ func (hHandler *Handler) Create(ctx context.Context, l links.TLinks) (links.TLin
 
 	storeLink, err := hHandler.links.Create(ctx, link)
 	if err != nil {
-		return links.TLinks{}, fmt.Errorf("error when creating: %w", err)
+		return TLink{}, fmt.Errorf("error when creating: %w", err)
 	}
 
-	return links.TLinks{
+	return TLink{
 		ID:        storeLink.ID,
 		URL:       storeLink.URL,
 		Name:      storeLink.Name,
@@ -68,20 +55,20 @@ func (hHandler *Handler) Create(ctx context.Context, l links.TLinks) (links.TLin
 
 var ErrLinkNotFound = errors.New("link not found")
 
-func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (links.TLinks, error) {
+func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (TLink, error) {
 	if (uid == uuid.UUID{}) {
-		return links.TLinks{}, fmt.Errorf("bad request: uid is empty")
+		return TLink{}, fmt.Errorf("bad request: uid is empty")
 	}
 
 	storeLink, err := hHandler.links.Read(ctx, uid)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return links.TLinks{}, ErrLinkNotFound
+			return TLink{}, ErrLinkNotFound
 		}
-		return links.TLinks{}, fmt.Errorf("error when reading: %w", err)
+		return TLink{}, fmt.Errorf("error when reading: %w", err)
 	}
 
-	return links.TLinks{
+	return TLink{
 		ID:        storeLink.ID,
 		URL:       storeLink.URL,
 		Name:      storeLink.Name,
@@ -93,20 +80,20 @@ func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (links.TLinks,
 	}, nil
 }
 
-func (hHandler *Handler) Delete(ctx context.Context, uid uuid.UUID) (links.TLinks, error) {
+func (hHandler *Handler) Delete(ctx context.Context, uid uuid.UUID) (TLink, error) {
 	if (uid == uuid.UUID{}) {
-		return links.TLinks{}, fmt.Errorf("bad request: uid is empty")
+		return TLink{}, fmt.Errorf("bad request: uid is empty")
 	}
 
 	storeLink, err := hHandler.links.Delete(ctx, uid)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return links.TLinks{}, ErrLinkNotFound
+			return TLink{}, ErrLinkNotFound
 		}
-		return links.TLinks{}, fmt.Errorf("error when reading: %w", err)
+		return TLink{}, fmt.Errorf("error when reading: %w", err)
 	}
 
-	return links.TLinks{
+	return TLink{
 		ID:        storeLink.ID,
 		URL:       storeLink.URL,
 		Name:      storeLink.Name,

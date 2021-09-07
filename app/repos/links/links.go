@@ -8,7 +8,7 @@ import (
 	"github.com/google/uuid"
 )
 
-type TLinks struct {
+type TLink struct {
 	ID        uuid.UUID `json:"id"`
 	URL       string    `json:"url"`
 	Name      string    `json:"name"`
@@ -20,8 +20,8 @@ type TLinks struct {
 }
 
 type LinksStore interface {
-	Create(ctx context.Context, l TLinks) (*uuid.UUID, error)
-	Read(ctx context.Context, lid uuid.UUID) (*TLinks, error)
+	Create(ctx context.Context, l TLink) (*uuid.UUID, error)
+	Read(ctx context.Context, lid uuid.UUID) (*TLink, error)
 	// Update(ctx context.Context, lid uuid.UUID, l TLinks) (*uuid.UUID, error)
 	Delete(ctx context.Context, lid uuid.UUID) error
 	// Go(ctx context.Context, sl string) error
@@ -38,7 +38,7 @@ func NewLinks(store LinksStore) *Links {
 	}
 }
 
-func (link *Links) Create(ctx context.Context, l TLinks) (*TLinks, error) {
+func (link *Links) Create(ctx context.Context, l TLink) (*TLink, error) {
 	id, err := link.store.Create(ctx, l)
 	if err != nil {
 		return nil, fmt.Errorf("create link error: %w", err)
@@ -47,7 +47,7 @@ func (link *Links) Create(ctx context.Context, l TLinks) (*TLinks, error) {
 	return &l, nil
 }
 
-func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLinks, error) {
+func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLink, error) {
 	l, err := link.store.Read(ctx, lid)
 	if err != nil {
 		return nil, fmt.Errorf("read link error: %w", err)
@@ -55,7 +55,7 @@ func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLinks, error) {
 	return l, nil
 }
 
-func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLinks) (*TLinks, error) {
+func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLink) (*TLink, error) {
 	if _, err := link.Delete(ctx, lid); err != nil {
 		return nil, err
 	}
@@ -66,7 +66,7 @@ func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLinks) (*TLinks
 	return lNew, nil
 }
 
-func (link *Links) Delete(ctx context.Context, lid uuid.UUID) (*TLinks, error) {
+func (link *Links) Delete(ctx context.Context, lid uuid.UUID) (*TLink, error) {
 	l, err := link.store.Read(ctx, lid)
 	if err != nil {
 		return nil, fmt.Errorf("delete link error: %w", err)

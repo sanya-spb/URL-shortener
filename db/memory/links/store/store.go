@@ -13,16 +13,16 @@ var _ links.LinksStore = &Links{}
 
 type Links struct {
 	sync.Mutex
-	m map[uuid.UUID]links.TLinks
+	m map[uuid.UUID]links.TLink
 }
 
 func NewLinks() *Links {
 	return &Links{
-		m: make(map[uuid.UUID]links.TLinks),
+		m: make(map[uuid.UUID]links.TLink),
 	}
 }
 
-func (link *Links) Create(ctx context.Context, l links.TLinks) (*uuid.UUID, error) {
+func (link *Links) Create(ctx context.Context, l links.TLink) (*uuid.UUID, error) {
 	link.Lock()
 	defer link.Unlock()
 
@@ -38,7 +38,7 @@ func (link *Links) Create(ctx context.Context, l links.TLinks) (*uuid.UUID, erro
 	return &uid, nil
 }
 
-func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*links.TLinks, error) {
+func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*links.TLink, error) {
 	link.Lock()
 	defer link.Unlock()
 
