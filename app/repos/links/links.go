@@ -13,7 +13,7 @@ type TLink struct {
 	URL       string    `json:"url"`
 	Name      string    `json:"name"`
 	Descr     string    `json:"descr"`
-	ShortLink string    `json:"short_link"`
+	LinkID    string    `json:"link_id"`
 	CreatedAt time.Time `json:"created_at"`
 	DeleteAt  time.Time `json:"delete_at"`
 	User      string    `json:"user"`
