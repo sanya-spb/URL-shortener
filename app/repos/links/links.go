@@ -22,7 +22,7 @@ type TLinks struct {
 type LinksStore interface {
 	Create(ctx context.Context, l TLinks) (*uuid.UUID, error)
 	Read(ctx context.Context, lid uuid.UUID) (*TLinks, error)
-	// Update(ctx context.Context, lid uuid.UUID, l TLinks) error
+	// Update(ctx context.Context, lid uuid.UUID, l TLinks) (*uuid.UUID, error)
 	Delete(ctx context.Context, lid uuid.UUID) error
 	// Go(ctx context.Context, sl string) error
 	// Stat(ctx context.Context, s string) (chan TLinks, error)
@@ -47,18 +47,29 @@ func (link *Links) Create(ctx context.Context, l TLinks) (*TLinks, error) {
 	return &l, nil
 }
 
-func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*TLinks, error) {
-	l, err := link.store.Read(ctx, uid)
+func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLinks, error) {
+	l, err := link.store.Read(ctx, lid)
 	if err != nil {
 		return nil, fmt.Errorf("read link error: %w", err)
 	}
 	return l, nil
 }
 
-func (link *Links) Delete(ctx context.Context, uid uuid.UUID) (*TLinks, error) {
-	u, err := link.store.Read(ctx, uid)
+func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLinks) (*TLinks, error) {
+	if _, err := link.Delete(ctx, lid); err != nil {
+		return nil, err
+	}
+	lNew, err := link.Create(ctx, l)
+	if err != nil {
+		return nil, err
+	}
+	return lNew, nil
+}
+
+func (link *Links) Delete(ctx context.Context, lid uuid.UUID) (*TLinks, error) {
+	l, err := link.store.Read(ctx, lid)
 	if err != nil {
 		return nil, fmt.Errorf("delete link error: %w", err)
 	}
-	return u, link.store.Delete(ctx, uid)
+	return l, link.store.Delete(ctx, lid)
 }
