@@ -17,7 +17,7 @@ tags:
 - name: user
   description: Operations available to regular users
 paths:
-  /new:
+  /:
     put:
       tags:
       - user
@@ -29,7 +29,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/new_body'
+              $ref: '#/components/schemas/body'
       responses:
         "201":
           description: Created
@@ -47,7 +47,7 @@ paths:
           description: Internal Server Error
         "501":
           description: Not Implemented
-  /update/{uuid}:
+  /{uuid}:
     put:
       tags:
       - admin
@@ -68,7 +68,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/update_uuid_body'
+              $ref: '#/components/schemas/uuid_body'
       responses:
         "200":
           description: Success
@@ -329,7 +329,7 @@ components:
         allOf:
         - $ref: '#/components/schemas/Link'
         - type: integer
-    new_body:
+    body:
       required:
       - Descr
       - Name
@@ -350,7 +350,7 @@ components:
           type: string
           format: date-time
           example: 2022-01-01T11:11:11.111Z
-    update_uuid_body:
+    uuid_body:
       required:
       - Descr
       - Name

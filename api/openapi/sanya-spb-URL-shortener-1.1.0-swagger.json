@@ -21,7 +21,7 @@
     "description" : "Operations available to regular users"
   } ],
   "paths" : {
-    "/new" : {
+    "/" : {
       "put" : {
         "tags" : [ "user" ],
         "summary" : "adds Link",
@@ -87,7 +87,7 @@
         }
       }
     },
-    "/update/{uuid}" : {
+    "/{uuid}" : {
       "put" : {
         "tags" : [ "admin" ],
         "summary" : "updates Link",

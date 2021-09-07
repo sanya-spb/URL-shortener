@@ -33,11 +33,11 @@ func NewRouter(hHandler *handler.Handler) *Router {
 	r := chi.NewRouter()
 	r.Group(func(rAdm chi.Router) {
 		rAdm.Get("/stat", rRouter.Stat)
-		rAdm.Put("/update", rRouter.Update)
+		rAdm.Put("/{uuid}", rRouter.Update)
 		rAdm.Delete("/delete/{uuid}", rRouter.Delete)
 		rAdm.Get("/status/{code}", rRouter.StatusCode)
 	}) //.Use(auth.AuthMiddleware) // TODO: заменить на middleware.BasicAuth()
-	r.Put("/new", rRouter.Create)
+	r.Put("/", rRouter.Create)
 	r.Get("/info/{uuid}", rRouter.Read)
 	r.Get("/status", rRouter.Status)
 	r.Get("/", rRouter.Go)
@@ -57,6 +57,7 @@ func (rRouter *Router) Create(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err500(err))
 		return
 	}
+	render.Status(r, http.StatusCreated)
 	render.Render(w, r, TLink(l))
 }
 
@@ -111,11 +112,11 @@ func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err500(err))
 		return
 	}
+	// render.Status(r, http.StatusNoContent)
 	render.Render(w, r, TLink(l))
 }
 
 func (rRouter *Router) Status(w http.ResponseWriter, r *http.Request) {
-	// render.Status(r, http.StatusOK)
 	fmt.Fprintln(w, "ok")
 }
 

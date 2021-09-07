@@ -28,7 +28,7 @@
     }
   ],
   "paths": {
-    "/new": {
+    "/": {
       "put": {
         "tags": [
           "user"
@@ -41,7 +41,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/new_body"
+                "$ref": "#/components/schemas/body"
               }
             }
           }
@@ -75,7 +75,7 @@
         }
       }
     },
-    "/update/{uuid}": {
+    "/{uuid}": {
       "put": {
         "tags": [
           "admin"
@@ -101,7 +101,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/update_uuid_body"
+                "$ref": "#/components/schemas/uuid_body"
               }
             }
           }
@@ -493,7 +493,7 @@
           ]
         }
       },
-      "new_body": {
+      "body": {
         "required": [
           "Descr",
           "Name",
@@ -521,7 +521,7 @@
           }
         }
       },
-      "update_uuid_body": {
+      "uuid_body": {
         "required": [
           "Descr",
           "Name",

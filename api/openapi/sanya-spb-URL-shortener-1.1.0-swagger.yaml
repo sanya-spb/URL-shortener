@@ -15,7 +15,7 @@ tags:
   - name: user
     description: Operations available to regular users
 paths:
-  /new:
+  /:
     put:
       tags:
         - user
@@ -64,7 +64,7 @@ paths:
                   format: date-time
                   example: '2022-01-01T11:11:11.111Z'
         description: Link info to add
-  /update/{uuid}:
+  /{uuid}:
     put:
       tags:
         - admin
