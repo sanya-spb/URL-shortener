@@ -80,6 +80,17 @@ func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (TLink, error)
 	}, nil
 }
 
+func (hHandler *Handler) Update(ctx context.Context, uid uuid.UUID, l TLink) (TLink, error) {
+	if _, err := hHandler.Delete(ctx, uid); err != nil {
+		return TLink{}, err
+	}
+	link, err := hHandler.Create(ctx, l)
+	if err != nil {
+		return TLink{}, err
+	}
+	return link, nil
+}
+
 func (hHandler *Handler) Delete(ctx context.Context, uid uuid.UUID) (TLink, error) {
 	if (uid == uuid.UUID{}) {
 		return TLink{}, fmt.Errorf("bad request: uid is empty")
