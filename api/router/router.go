@@ -71,7 +71,43 @@ func (rRouter *Router) Read(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, TLink(l))
 }
 
-func (rRouter *Router) Update(w http.ResponseWriter, r *http.Request)
-func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request)
+func (rRouter *Router) Update(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "uuid")
+
+	lid, err := uuid.Parse(id)
+	if err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+
+	rl := TLink{}
+	if err = render.Bind(r, &rl); err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+	l, err := rRouter.hHandler.Update(r.Context(), lid, handler.TLink(rl))
+	if err != nil {
+		render.Render(w, r, Err500(err))
+		return
+	}
+	render.Render(w, r, TLink(l))
+}
+
+func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "uuid")
+
+	lid, err := uuid.Parse(id)
+	if err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+	l, err := rRouter.hHandler.Delete(r.Context(), lid)
+	if err != nil {
+		render.Render(w, r, Err500(err))
+		return
+	}
+	render.Render(w, r, TLink(l))
+}
+
 func (rRouter *Router) Go(w http.ResponseWriter, r *http.Request)
 func (rRouter *Router) Stat(w http.ResponseWriter, r *http.Request)
