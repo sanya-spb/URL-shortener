@@ -1,12 +1,13 @@
 package router
 
 import (
+	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/google/uuid"
-	"github.com/sanya-spb/URL-shortener/api/auth"
 	"github.com/sanya-spb/URL-shortener/api/handler"
 )
 
@@ -17,8 +18,12 @@ type Router struct {
 
 type TLink handler.TLink
 
-func (TLink) Bind(r *http.Request) error
-func (TLink) Render(w http.ResponseWriter, r *http.Request) error
+func (TLink) Bind(r *http.Request) error {
+	return nil
+}
+func (TLink) Render(w http.ResponseWriter, r *http.Request) error {
+	return nil
+}
 
 func NewRouter(hHandler *handler.Handler) *Router {
 	rRouter := &Router{
@@ -30,14 +35,14 @@ func NewRouter(hHandler *handler.Handler) *Router {
 		rAdm.Get("/stat", rRouter.Stat)
 		rAdm.Put("/update", rRouter.Update)
 		rAdm.Delete("/delete/{uuid}", rRouter.Delete)
-	}).Use(auth.AuthMiddleware) // TODO: заменить на middleware.BasicAuth()
+		rAdm.Get("/status/{code}", rRouter.StatusCode)
+	}) //.Use(auth.AuthMiddleware) // TODO: заменить на middleware.BasicAuth()
 	r.Put("/new", rRouter.Create)
 	r.Get("/info/{uuid}", rRouter.Read)
-	// r.Put("/update", rRouter.Update)
-	// r.Delete("/delete", rRouter.Delete)
-	r.Get("/go/{id}", rRouter.Go)
-	// r.Get("/stat", rRouter.Stat)
+	r.Get("/status", rRouter.Status)
+	r.Get("/", rRouter.Go)
 
+	rRouter.Handler = r
 	return rRouter
 }
 
@@ -109,5 +114,20 @@ func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
 	render.Render(w, r, TLink(l))
 }
 
-func (rRouter *Router) Go(w http.ResponseWriter, r *http.Request)
-func (rRouter *Router) Stat(w http.ResponseWriter, r *http.Request)
+func (rRouter *Router) Status(w http.ResponseWriter, r *http.Request) {
+	// render.Status(r, http.StatusOK)
+	fmt.Fprintln(w, "ok")
+}
+
+func (rRouter *Router) StatusCode(w http.ResponseWriter, r *http.Request) {
+	code := chi.URLParam(r, "code")
+	fmt.Fprintln(w, code)
+}
+
+func (rRouter *Router) Go(w http.ResponseWriter, r *http.Request) {
+	render.Render(w, r, Err501(errors.New("/{id} not implemented")))
+}
+
+func (rRouter *Router) Stat(w http.ResponseWriter, r *http.Request) {
+	render.Render(w, r, Err501(errors.New("/stat not implemented")))
+}
