@@ -64,7 +64,7 @@ Backend-development on Go. Module 1
 ## Решение
 
 ### API
-https://app.swaggerhub.com/apis/sanya-spb/URL-shortener/1.0.0#/developers/getStat
+https://app.swaggerhub.com/apis/sanya-spb/URL-shortener
 
 ### Router: 
 Выбрал go-chi по следующим соображениям:
