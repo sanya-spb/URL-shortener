@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links UI</title>
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+</head>
+<body>
+    <h1>URL-shortener</h1>
+    <h2>Backend-development on Go. Module 1</h2>
+    <h3>Link info:</h3>
+    <form id="form-edit-link">
+        <div id="link"></div>
+    </form>
+    <h3>update:</h3>
+    <form id="form-upd-link">
+        <input value="update" type="button" onclick="updLink()"><br>
+        <input value="update with result" type="button" onclick="updLinkRes()">
+    </form>
+    <h3>delete:</h3>
+    <form id="form-del-link">
+        <input value="delete" type="button" onclick="delLink()"><br>
+        <input value="delete with result" type="button" onclick="delLinkRes()">
+    </form>
+<script>
+    (function() {
+        $.getJSON('/i/'+ getQueryParam("id"), function(data) {
+            var items = [];
+            $.each( data, function( key, val ) {
+                if (key=="id") {
+                    ro = ' readonly="readonly" '
+                } else {
+                    ro = ""
+                }
+                items.push(
+                    "<li><label for="+ key +">"+ key +":</label><br>"+
+                    "<input id="+ key +" type=\"text\""+ ro +" name="+ key +" value="+ val +"><br>"
+                );
+            });
+
+            $( "<ul/>", {
+              "class": "my-new-list",
+              html: items.join( "" )
+            }).appendTo( "#link" );
+
+            $( "<div/>", {
+                "class": "my-new-link",
+                html: '<h4>You can add link to your resource:</h4>'+
+                '<a href="/'+ data["id"] +'"title="'+ data["descr"] +'">'+ data["name"] +'</a>'
+            }).appendTo( "#link" );
+        });
+    })();
+
+    function getQueryParam(item) {
+        var svalue = window.location.search.match(new RegExp('[\?\&]' + item + '=([^\&]*)(\&?)', 'i'));
+        return svalue ? svalue[1] : svalue;
+    }
+
+    function delLink() {
+        const XHR = new XMLHttpRequest();
+
+        XHR.addEventListener("load", function(event) {
+            location.replace("/ui/");
+            return false;
+        });
+        XHR.addEventListener( "error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        XHR.open("DELETE", "/d/"+ getQueryParam("id"));
+        XHR.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        XHR.send();
+    }
+
+    function delLinkRes() {
+        const XHR = new XMLHttpRequest();
+
+        XHR.addEventListener("load", function(event) {
+            alert(event.target.responseText);
+            location.replace("/ui/");
+            return false;
+        });
+        XHR.addEventListener("error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        XHR.open("DELETE", "/d/r/"+ getQueryParam("id"));
+        XHR.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        XHR.send();
+    }
+
+    function updLink() {
+        const XHR = new XMLHttpRequest();
+        var data = JSON.stringify({
+            name: document.getElementById("name").value,
+            url: document.getElementById("url").value,
+            descr: document.getElementById("descr").value,
+            delete_at: document.getElementById("delete_at").value,
+        });
+
+        XHR.addEventListener("load", function(event) {
+            location.reload();
+            return false;
+        });
+        XHR.addEventListener("error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        XHR.open("PUT", "/"+ getQueryParam("id"));
+        XHR.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        XHR.send(data);
+    }
+
+    function updLinkRes() {
+        const XHR = new XMLHttpRequest();
+        var data = JSON.stringify({
+            name: document.getElementById("name").value,
+            url: document.getElementById("url").value,
+            descr: document.getElementById("descr").value,
+            delete_at: document.getElementById("delete_at").value,
+        });
+
+        XHR.addEventListener("load", function(event) {
+            alert(event.target.responseText);
+            location.reload();
+            return false;
+        });
+        XHR.addEventListener("error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        XHR.open("POST", "/r/"+ getQueryParam("id"));
+        XHR.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        XHR.send(data);
+    }
+</script>
+</body>
+</html>

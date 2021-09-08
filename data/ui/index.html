@@ -8,22 +8,92 @@
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 </head>
 <body>
+    <h1>URL-shortener</h1>
+    <h2>Backend-development on Go. Module 1</h2>
+    <h3>add link:</h3>
+    <form id="form-add-link">
+        <ul class="my-new-list">
+            <!-- <li>
+                <label for="id">id:</label><br>
+                <input id="id" type="text" readonly="readonly" name="id" value="ceclXs"><br>
+            </li> -->
+            <li>
+                <label for="name">name:</label><br>
+                <input id="name" type="text" name="name" value="TestName 1"><br>
+            </li>
+            <li>
+                <label for="url">url:</label><br>
+                <input id="url" type="text" name="url" value="http://example.org"><br>
+            </li>
+            <li>
+                <label for="descr">descr:</label><br>
+                <input id="descr" type="text" name="descr" value="Some description" test="" description=""><br>
+            </li>
+            <!-- <li>
+                <label for="created_at">created_at:</label><br>
+                <input id="created_at" type="text" name="created_at" value="2021-09-08T23:29:17.066589371+03:00"><br>
+            </li> -->
+            <li>
+                <label for="delete_at">delete_at:</label><br>
+                <input id="delete_at" type="text" name="delete_at" value="2021-09-08T23:29:17.066589559+03:00"><br>
+            </li>
+            <!-- <li>
+                <label for="user">user:</label><br>
+                <input id="user" type="text" name="user" value=""><br>
+            </li>
+            <li>
+                <label for="go_count">go_count:</label><br>
+                <input id="go_count" type="text" name="go_count" value="0"><br>
+            </li> -->
+        </ul>
+        <input id="debug" type="checkbox">debug<br>
+        <input value="add" type="button" onclick="addLink()">
+    </form>
+    <div id=result-add-link></div>
+    <h3>list of registered links:</h3>
     <div id="links"></div>
-
-    <script>
-        (function() {
-            $.getJSON('/i/K9gAwC', function(data) {
-                 var items = [];
-                 $.each(data, function(key, val) {
-                   items.push('<li id="' + key + '">' + val + '</li>');
-                 });
-                 $('<ul/>', {
-                   'class': 'my-new-list',
-                   html: items.join('')
-                 }).appendTo('#links');
+<script>
+    (function() {
+        $.getJSON('/stat', function(data) {
+            $.each(data, function(kk, link) {
+                var items = [];
+                $.each(link, function(key, data) {
+                    items.push(
+                        '<li><a href="/ui/info.html?id='+ data["id"] +'">' + data["name"] +'</a></li>'
+                    );
                 });
-                
-        })();
-    </script>
+                $('<ul/>', {
+                    'class': 'my-new-list',
+                    html: items.join('')
+                }).appendTo('#links');
+
+            });
+        });
+    })();
+
+    function addLink() {
+        const XHR = new XMLHttpRequest();
+        var data = JSON.stringify({
+            name: document.getElementById("name").value,
+            url: document.getElementById("url").value,
+            descr: document.getElementById("descr").value,
+            delete_at: document.getElementById("delete_at").value,
+          });
+
+        XHR.addEventListener("load", function(event) {
+            if (document.getElementById("debug").checked) {
+                alert( event.target.responseText);
+            }
+            location.reload();
+            return false;
+        });
+        XHR.addEventListener("error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        XHR.open("PUT", "/");
+        XHR.setRequestHeader("Content-type", "application/json; charset=utf-8");
+        XHR.send(data);
+    }
+</script>
 </body>
 </html>
