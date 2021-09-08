@@ -55,16 +55,16 @@ func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLink, error) {
 	return l, nil
 }
 
-// func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLink) (*TLink, error) {
-// 	if _, err := link.Delete(ctx, lid); err != nil {
-// 		return nil, err
-// 	}
-// 	lNew, err := link.Create(ctx, l)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return lNew, nil
-// }
+func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLink) (*TLink, error) {
+	if _, err := link.Delete(ctx, lid); err != nil {
+		return nil, err
+	}
+	lNew, err := link.Create(ctx, l)
+	if err != nil {
+		return nil, err
+	}
+	return lNew, nil
+}
 
 func (link *Links) Delete(ctx context.Context, lid uuid.UUID) (*TLink, error) {
 	l, err := link.store.Read(ctx, lid)
