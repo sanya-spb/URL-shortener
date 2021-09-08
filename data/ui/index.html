@@ -35,7 +35,7 @@
             </li> -->
             <li>
                 <label for="delete_at">delete_at:</label><br>
-                <input id="delete_at" type="text" name="delete_at" value="2021-09-08T23:29:17.066589559+03:00"><br>
+                <input id="delete_at" type="text" name="delete_at" value=""><br>
             </li>
             <!-- <li>
                 <label for="user">user:</label><br>
@@ -53,6 +53,10 @@
     <h3>List of registered links:</h3>
     <div id="links"></div>
 <script>
+    const today = new Date()
+    const finalDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate())
+    document.getElementById("delete_at").value = finalDate.toISOString();
+
     (function() {
         $.getJSON('/stat', function(data) {
             $.each(data, function(kk, link) {
