@@ -33,7 +33,7 @@ func (link *TLink) Bind(r *http.Request) error {
 
 	link.ID = ""
 	link.CreatedAt = time.Now()
-	link.DeleteAt = time.Now()
+	// link.DeleteAt = time.Now()
 	link.User = ""
 	link.GoCount = 0
 

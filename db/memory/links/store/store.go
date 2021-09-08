@@ -192,11 +192,16 @@ func (link *Links) Go(ctx context.Context, id string) (string, error) {
 	default:
 	}
 
-	link.RLock()
-	defer link.RUnlock()
+	link.Lock()
+	defer link.Unlock()
 
 	data, ok := link.m[id]
 	if ok {
+		if link.m[id].DeleteAt.Before(time.Now()) {
+			return "", sql.ErrNoRows
+		}
+		data.GoCount++
+		link.m[id] = data
 		return data.URL, nil
 	}
 	return "", sql.ErrNoRows
