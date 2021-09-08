@@ -172,7 +172,7 @@ paths:
                   format: date-time
                   example: '2022-02-02T22:22:22.222Z'
         description: Link info to update
-  /info/{uuid}:
+  /i/{uuid}:
     get:
       tags:
         - user
@@ -203,7 +203,7 @@ paths:
           description: 'Internal Server Error'
         '501':
           description: 'Not Implemented'
-  /delete/{uuid}:
+  /d/{uuid}:
     delete:
       tags:
         - admin
@@ -230,7 +230,7 @@ paths:
           description: 'Internal Server Error'
         '501':
           description: 'Not Implemented'
-  /delete/r/{uuid}:
+  /d/r/{uuid}:
     delete:
       tags:
         - admin

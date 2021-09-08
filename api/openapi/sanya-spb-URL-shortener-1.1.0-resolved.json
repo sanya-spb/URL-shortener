@@ -188,7 +188,7 @@
         }
       }
     },
-    "/info/{uuid}": {
+    "/i/{uuid}": {
       "get": {
         "tags": [
           "user"
@@ -238,7 +238,7 @@
         }
       }
     },
-    "/delete/{uuid}": {
+    "/d/{uuid}": {
       "delete": {
         "tags": [
           "admin"
@@ -281,7 +281,7 @@
         }
       }
     },
-    "/delete/r/{uuid}": {
+    "/d/r/{uuid}": {
       "delete": {
         "tags": [
           "admin"

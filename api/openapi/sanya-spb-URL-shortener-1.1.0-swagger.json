@@ -230,7 +230,7 @@
         }
       }
     },
-    "/info/{uuid}" : {
+    "/i/{uuid}" : {
       "get" : {
         "tags" : [ "user" ],
         "summary" : "gets Link info",
@@ -274,7 +274,7 @@
         }
       }
     },
-    "/delete/{uuid}" : {
+    "/d/{uuid}" : {
       "delete" : {
         "tags" : [ "admin" ],
         "summary" : "delete Link",
@@ -311,7 +311,7 @@
         }
       }
     },
-    "/delete/r/{uuid}" : {
+    "/d/r/{uuid}" : {
       "delete" : {
         "tags" : [ "admin" ],
         "summary" : "delete Link and return deleted Link",
