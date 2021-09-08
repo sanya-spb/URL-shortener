@@ -67,6 +67,10 @@ func (rRouter *Router) Read(w http.ResponseWriter, req *http.Request) {
 
 	hLink, err := rRouter.hHandler.Read(req.Context(), id)
 	if err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
@@ -82,6 +86,10 @@ func (rRouter *Router) Update(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if err := rRouter.hHandler.Update(req.Context(), id, handler.TLink(link)); err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
@@ -98,6 +106,10 @@ func (rRouter *Router) UpdateRet(w http.ResponseWriter, req *http.Request) {
 	}
 	hLink, err := rRouter.hHandler.UpdateRet(req.Context(), id, handler.TLink(link))
 	if err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
@@ -108,6 +120,10 @@ func (rRouter *Router) Delete(w http.ResponseWriter, req *http.Request) {
 	id := chi.URLParam(req, "id")
 
 	if err := rRouter.hHandler.Delete(req.Context(), id); err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
@@ -119,6 +135,10 @@ func (rRouter *Router) DeleteRet(w http.ResponseWriter, req *http.Request) {
 
 	hLink, err := rRouter.hHandler.DeleteRet(req.Context(), id)
 	if err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
@@ -139,6 +159,10 @@ func (rRouter *Router) Go(w http.ResponseWriter, req *http.Request) {
 
 	url, err := rRouter.hHandler.Go(req.Context(), id)
 	if err != nil {
+		if errors.As(err, &handler.ErrLinkNotFound) {
+			render.Render(w, req, Err404(err))
+			return
+		}
 		render.Render(w, req, Err500(err))
 		return
 	}
