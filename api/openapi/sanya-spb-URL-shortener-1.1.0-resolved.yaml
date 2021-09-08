@@ -216,26 +216,26 @@ paths:
           description: Internal Server Error
         "501":
           description: Not Implemented
-  /{id}:
+  /{target}:
     get:
       tags:
       - user
-      summary: go to source link
+      summary: go to target coded link
       description: |
         By passing in the appropriate options, you can move external www source
       operationId: goTo
       parameters:
-      - name: id
+      - name: target
         in: path
-        description: pass an short link as id to move
+        description: pass an target coded link to redirect
         required: true
         style: simple
         explode: false
         schema:
           type: string
       responses:
-        "302":
-          description: Found
+        "307":
+          description: Temporary Redirect
         "400":
           description: Bad Request
         "403":

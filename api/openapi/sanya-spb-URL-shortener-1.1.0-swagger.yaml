@@ -261,24 +261,24 @@ paths:
           description: 'Internal Server Error'
         '501':
           description: 'Not Implemented'
-  /{id}:
+  /{target}:
     get:
       tags:
         - user
-      summary: go to source link
+      summary: go to target coded link
       operationId: goTo
       description: |
         By passing in the appropriate options, you can move external www source
       parameters:
         - in: path
-          name: id
-          description: pass an short link as id to move
+          name: target
+          description: pass an target coded link to redirect
           required: true
           schema:
             type: string
       responses:
-        '302':
-          description: 'Found'
+        '307':
+          description: 'Temporary Redirect'
         '400':
           description: 'Bad Request'
         '403':
