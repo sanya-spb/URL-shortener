@@ -57,19 +57,21 @@ func NewRouter(hHandler *handler.Handler) *Router {
 	r.Use(middleware.NoCache)
 
 	r.Group(func(rAdm chi.Router) {
+		rAdm.Use(middleware.BasicAuth("Auth needed", map[string]string{"admin": "admin"}))
+
 		rAdm.Get("/stat", rRouter.Stat)
 		rAdm.Put("/{id}", rRouter.Update)
 		rAdm.Post("/r/{id}", rRouter.UpdateRet)
 		rAdm.Delete("/d/{id}", rRouter.Delete)
 		rAdm.Delete("/d/r/{id}", rRouter.DeleteRet)
 		rAdm.Get("/status/{code}", rRouter.StatusCode)
+
+		rAdm.Get("/ui/*", rRouter.ui)
 	})
 	r.Put("/", rRouter.Create)
 	r.Get("/i/{id}", rRouter.Read)
 	r.Get("/status", rRouter.Status)
 	r.Get("/{id}", rRouter.Go)
-
-	r.Get("/ui/*", rRouter.ui)
 
 	rRouter.Handler = r
 	return rRouter
