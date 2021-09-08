@@ -10,7 +10,7 @@
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "1.1.0"
+    "version": "1.2.0"
   },
   "servers": [
     {
@@ -59,6 +59,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -112,6 +115,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -173,6 +179,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -223,6 +232,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -265,6 +277,9 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -316,6 +331,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -359,6 +377,9 @@
           "400": {
             "description": "Bad Request"
           },
+          "401": {
+            "description": "Unauthorized"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -401,13 +422,16 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Stat"
+                  "$ref": "#/components/schemas/Link"
                 }
               }
             }
           },
           "400": {
             "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
           },
           "403": {
             "description": "Forbidden"
@@ -443,6 +467,12 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
           },
           "500": {
             "description": "Internal Server Error"
@@ -486,6 +516,12 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
           "500": {
             "description": "Internal Server Error"
           },
@@ -503,18 +539,17 @@
           "CreatedAt",
           "DeleteAt",
           "Descr",
-          "LinkID",
+          "GoCount",
+          "ID",
           "Name",
           "URL",
-          "UUID",
           "User"
         ],
         "type": "object",
         "properties": {
-          "UUID": {
+          "ID": {
             "type": "string",
-            "format": "uuid",
-            "example": "123e4567-e89b-12d3-a456-426655440000"
+            "example": "wohv7Boh"
           },
           "URL": {
             "type": "string",
@@ -529,10 +564,6 @@
             "type": "string",
             "example": "Google main page"
           },
-          "LinkID": {
-            "type": "string",
-            "example": "wohv7Boh"
-          },
           "CreatedAt": {
             "type": "string",
             "format": "date-time",
@@ -545,6 +576,11 @@
           },
           "User": {
             "$ref": "#/components/schemas/User"
+          },
+          "GoCount": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1024
           }
         }
       },
@@ -557,33 +593,6 @@
             "type": "string",
             "example": "James Fenimore Cooper"
           }
-        }
-      },
-      "Stat": {
-        "required": [
-          "link",
-          "redirects"
-        ],
-        "type": "array",
-        "properties": {
-          "link": {
-            "$ref": "#/components/schemas/Link"
-          },
-          "redirects": {
-            "type": "integer",
-            "format": "uint64",
-            "example": 65536
-          }
-        },
-        "items": {
-          "allOf": [
-            {
-              "$ref": "#/components/schemas/Link"
-            },
-            {
-              "type": "integer"
-            }
-          ]
         }
       },
       "body": {
