@@ -33,8 +33,15 @@ func (link *TLink) Bind(r *http.Request) error {
 
 	link.ID = ""
 	link.CreatedAt = time.Now()
-	// link.DeleteAt = time.Now()
-	link.User = ""
+
+	if user, _, ok := r.BasicAuth(); ok {
+		if user != "" {
+			link.User = user
+		}
+	} else {
+		link.User = "user"
+	}
+
 	link.GoCount = 0
 
 	return nil
