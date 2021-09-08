@@ -34,7 +34,9 @@ func NewRouter(hHandler *handler.Handler) *Router {
 	r.Group(func(rAdm chi.Router) {
 		rAdm.Get("/stat", rRouter.Stat)
 		rAdm.Put("/{uuid}", rRouter.Update)
+		rAdm.Post("/r/{uuid}", rRouter.UpdateRet)
 		rAdm.Delete("/delete/{uuid}", rRouter.Delete)
+		rAdm.Delete("/delete/r/{uuid}", rRouter.DeleteRet)
 		rAdm.Get("/status/{code}", rRouter.StatusCode)
 	}) //.Use(auth.AuthMiddleware) // TODO: заменить на middleware.BasicAuth()
 	r.Put("/", rRouter.Create)
@@ -91,7 +93,28 @@ func (rRouter *Router) Update(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	hLink, err := rRouter.hHandler.Update(r.Context(), lid, handler.TLink(link))
+	if err := rRouter.hHandler.Update(r.Context(), lid, handler.TLink(link)); err != nil {
+		render.Render(w, r, Err500(err))
+		return
+	}
+	render.Status(r, http.StatusNoContent)
+}
+
+func (rRouter *Router) UpdateRet(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "uuid")
+
+	lid, err := uuid.Parse(id)
+	if err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+
+	link := TLink{}
+	if err = render.Bind(r, &link); err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+	hLink, err := rRouter.hHandler.UpdateRet(r.Context(), lid, handler.TLink(link))
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
@@ -107,12 +130,26 @@ func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	hLink, err := rRouter.hHandler.Delete(r.Context(), lid)
+	if err := rRouter.hHandler.Delete(r.Context(), lid); err != nil {
+		render.Render(w, r, Err500(err))
+		return
+	}
+	render.Status(r, http.StatusNoContent)
+}
+
+func (rRouter *Router) DeleteRet(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "uuid")
+
+	lid, err := uuid.Parse(id)
+	if err != nil {
+		render.Render(w, r, Err400(err))
+		return
+	}
+	hLink, err := rRouter.hHandler.DeleteRet(r.Context(), lid)
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
 	}
-	// render.Status(r, http.StatusNoContent)
 	render.Render(w, r, TLink(hLink))
 }
 

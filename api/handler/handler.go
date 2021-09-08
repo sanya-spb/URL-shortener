@@ -24,43 +24,21 @@ func NewHandler(links *links.Links) *Handler {
 // TODO: пока берем из пакета links, потом решим что тут лишнее
 type TLink links.TLink
 
-func (hHandler *Handler) Create(ctx context.Context, l TLink) (TLink, error) {
-	link := links.TLink{
-		ID:        l.ID,
-		URL:       l.URL,
-		Name:      l.Name,
-		Descr:     l.Descr,
-		LinkID:    l.LinkID,
-		CreatedAt: l.CreatedAt,
-		DeleteAt:  l.DeleteAt,
-		User:      l.User,
-	}
-
-	storeLink, err := hHandler.links.Create(ctx, link)
+func (hHandler *Handler) Create(ctx context.Context, link TLink) (TLink, error) {
+	data, err := hHandler.links.Create(ctx, links.TLink(link))
 	if err != nil {
 		return TLink{}, fmt.Errorf("error when creating: %w", err)
 	}
 
-	return TLink{
-		ID:        storeLink.ID,
-		URL:       storeLink.URL,
-		Name:      storeLink.Name,
-		Descr:     storeLink.Descr,
-		LinkID:    storeLink.LinkID,
-		CreatedAt: storeLink.CreatedAt,
-		DeleteAt:  storeLink.DeleteAt,
-		User:      storeLink.User,
-	}, nil
+	return TLink(*data), nil
 }
 
-var ErrLinkNotFound = errors.New("link not found")
-
-func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (TLink, error) {
-	if (uid == uuid.UUID{}) {
-		return TLink{}, fmt.Errorf("bad request: uid is empty")
+func (hHandler *Handler) Read(ctx context.Context, id uuid.UUID) (TLink, error) {
+	if (id == uuid.UUID{}) {
+		return TLink{}, fmt.Errorf("bad request: UUID is empty")
 	}
 
-	storeLink, err := hHandler.links.Read(ctx, uid)
+	data, err := hHandler.links.Read(ctx, id)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return TLink{}, ErrLinkNotFound
@@ -68,50 +46,69 @@ func (hHandler *Handler) Read(ctx context.Context, uid uuid.UUID) (TLink, error)
 		return TLink{}, fmt.Errorf("error when reading: %w", err)
 	}
 
-	return TLink{
-		ID:        storeLink.ID,
-		URL:       storeLink.URL,
-		Name:      storeLink.Name,
-		Descr:     storeLink.Descr,
-		LinkID:    storeLink.LinkID,
-		CreatedAt: storeLink.CreatedAt,
-		DeleteAt:  storeLink.DeleteAt,
-		User:      storeLink.User,
-	}, nil
+	return TLink(*data), nil
 }
 
-func (hHandler *Handler) Update(ctx context.Context, uid uuid.UUID, l TLink) (TLink, error) {
-	if _, err := hHandler.Delete(ctx, uid); err != nil {
-		return TLink{}, err
+func (hHandler *Handler) Update(ctx context.Context, id uuid.UUID, data TLink) error {
+	if (id == uuid.UUID{}) {
+		return fmt.Errorf("bad request: UUID is empty")
 	}
-	link, err := hHandler.Create(ctx, l)
+
+	err := hHandler.links.Update(ctx, id, links.TLink(data))
 	if err != nil {
-		return TLink{}, err
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrLinkNotFound
+		}
+		return fmt.Errorf("error when updating: %w", err)
 	}
-	return link, nil
+
+	return nil
 }
 
-func (hHandler *Handler) Delete(ctx context.Context, uid uuid.UUID) (TLink, error) {
-	if (uid == uuid.UUID{}) {
-		return TLink{}, fmt.Errorf("bad request: uid is empty")
+func (hHandler *Handler) UpdateRet(ctx context.Context, id uuid.UUID, data TLink) (TLink, error) {
+	if (id == uuid.UUID{}) {
+		return TLink{}, fmt.Errorf("bad request: UUID is empty")
 	}
 
-	storeLink, err := hHandler.links.Delete(ctx, uid)
+	newData, err := hHandler.links.UpdateRet(ctx, id, links.TLink(data))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return TLink{}, ErrLinkNotFound
 		}
-		return TLink{}, fmt.Errorf("error when reading: %w", err)
+		return TLink{}, fmt.Errorf("error when updating: %w", err)
 	}
 
-	return TLink{
-		ID:        storeLink.ID,
-		URL:       storeLink.URL,
-		Name:      storeLink.Name,
-		Descr:     storeLink.Descr,
-		LinkID:    storeLink.LinkID,
-		CreatedAt: storeLink.CreatedAt,
-		DeleteAt:  storeLink.DeleteAt,
-		User:      storeLink.User,
-	}, nil
+	return TLink(*newData), nil
+}
+
+func (hHandler *Handler) Delete(ctx context.Context, id uuid.UUID) error {
+	if (id == uuid.UUID{}) {
+		return fmt.Errorf("bad request: UUID is empty")
+	}
+
+	err := hHandler.links.Delete(ctx, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return ErrLinkNotFound
+		}
+		return fmt.Errorf("error when deleting: %w", err)
+	}
+
+	return nil
+}
+
+func (hHandler *Handler) DeleteRet(ctx context.Context, id uuid.UUID) (TLink, error) {
+	if (id == uuid.UUID{}) {
+		return TLink{}, fmt.Errorf("bad request: UUID is empty")
+	}
+
+	delData, err := hHandler.links.DeleteRet(ctx, id)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return TLink{}, ErrLinkNotFound
+		}
+		return TLink{}, fmt.Errorf("error when deleting: %w", err)
+	}
+
+	return TLink(*delData), nil
 }

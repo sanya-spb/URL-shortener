@@ -22,7 +22,7 @@ func NewLinks() *Links {
 	}
 }
 
-func (link *Links) Create(ctx context.Context, l links.TLink) (*uuid.UUID, error) {
+func (link *Links) Create(ctx context.Context, data links.TLink) (*uuid.UUID, error) {
 	link.Lock()
 	defer link.Unlock()
 
@@ -33,12 +33,12 @@ func (link *Links) Create(ctx context.Context, l links.TLink) (*uuid.UUID, error
 	}
 
 	uid := uuid.New()
-	l.ID = uid
-	link.m[l.ID] = l
+	data.ID = uid
+	link.m[data.ID] = data
 	return &uid, nil
 }
 
-func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*links.TLink, error) {
+func (link *Links) Read(ctx context.Context, id uuid.UUID) (*links.TLink, error) {
 	link.Lock()
 	defer link.Unlock()
 
@@ -47,15 +47,14 @@ func (link *Links) Read(ctx context.Context, uid uuid.UUID) (*links.TLink, error
 		return nil, ctx.Err()
 	default:
 	}
-	u, ok := link.m[uid]
+	data, ok := link.m[id]
 	if ok {
-		return &u, nil
+		return &data, nil
 	}
 	return nil, sql.ErrNoRows
 }
 
-// TODO: вернуть ошибку если не нашли
-func (link *Links) Delete(ctx context.Context, uid uuid.UUID) error {
+func (link *Links) Update(ctx context.Context, id uuid.UUID, data links.TLink) error {
 	link.Lock()
 	defer link.Unlock()
 
@@ -65,6 +64,68 @@ func (link *Links) Delete(ctx context.Context, uid uuid.UUID) error {
 	default:
 	}
 
-	delete(link.m, uid)
+	_, ok := link.m[id]
+	if !ok {
+		return sql.ErrNoRows
+	}
+
+	data.ID = id
+	link.m[data.ID] = data
 	return nil
+}
+
+func (link *Links) UpdateRet(ctx context.Context, id uuid.UUID, data links.TLink) (*links.TLink, error) {
+	link.Lock()
+	defer link.Unlock()
+
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	default:
+	}
+
+	_, ok := link.m[id]
+	if !ok {
+		return nil, sql.ErrNoRows
+	}
+
+	data.ID = id
+	link.m[data.ID] = data
+	return &data, nil
+}
+
+func (link *Links) Delete(ctx context.Context, id uuid.UUID) error {
+	link.Lock()
+	defer link.Unlock()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	default:
+	}
+
+	_, ok := link.m[id]
+	if ok {
+		delete(link.m, id)
+		return nil
+	}
+	return sql.ErrNoRows
+}
+
+func (link *Links) DeleteRet(ctx context.Context, id uuid.UUID) (*links.TLink, error) {
+	link.Lock()
+	defer link.Unlock()
+
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	default:
+	}
+
+	l, ok := link.m[id]
+	if ok {
+		delete(link.m, id)
+		return &l, nil
+	}
+	return nil, sql.ErrNoRows
 }

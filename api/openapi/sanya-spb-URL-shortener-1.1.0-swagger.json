@@ -103,6 +103,74 @@
           }
         } ],
         "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "409" : {
+            "description" : "Conflict"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          },
+          "501" : {
+            "description" : "Not Implemented"
+          }
+        },
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "type" : "object",
+                "required" : [ "Name", "URL", "Descr" ],
+                "properties" : {
+                  "Name" : {
+                    "type" : "string",
+                    "example" : "Google"
+                  },
+                  "URL" : {
+                    "type" : "string",
+                    "format" : "url",
+                    "example" : "https://google.com/index.html"
+                  },
+                  "Descr" : {
+                    "type" : "string",
+                    "example" : "Google main page v.2"
+                  },
+                  "DeleteAt" : {
+                    "type" : "string",
+                    "format" : "date-time",
+                    "example" : "2022-02-02T22:22:22.222Z"
+                  }
+                }
+              }
+            }
+          },
+          "description" : "Link info to update"
+        }
+      }
+    },
+    "/r/{uuid}" : {
+      "post" : {
+        "tags" : [ "admin" ],
+        "summary" : "updates Link and return updated Link",
+        "operationId" : "updRetLink",
+        "description" : "method Update (in CRUD spec)",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "uuid",
+          "description" : "pass an uuid for updating",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
           "200" : {
             "description" : "Success",
             "content" : {
@@ -222,6 +290,43 @@
           }
         } ],
         "responses" : {
+          "204" : {
+            "description" : "No Content"
+          },
+          "400" : {
+            "description" : "Bad Request"
+          },
+          "403" : {
+            "description" : "Forbidden"
+          },
+          "404" : {
+            "description" : "Not Found"
+          },
+          "500" : {
+            "description" : "Internal Server Error"
+          },
+          "501" : {
+            "description" : "Not Implemented"
+          }
+        }
+      }
+    },
+    "/delete/r/{uuid}" : {
+      "delete" : {
+        "tags" : [ "admin" ],
+        "summary" : "delete Link and return deleted Link",
+        "operationId" : "delRetLink",
+        "description" : "method Delete (in CRUD spec)",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "uuid",
+          "description" : "pass an uuid to delete",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
           "200" : {
             "description" : "Success",
             "content" : {
@@ -231,9 +336,6 @@
                 }
               }
             }
-          },
-          "204" : {
-            "description" : "No Content"
           },
           "400" : {
             "description" : "Bad Request"

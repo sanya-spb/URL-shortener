@@ -20,10 +20,12 @@ type TLink struct {
 }
 
 type LinksStore interface {
-	Create(ctx context.Context, l TLink) (*uuid.UUID, error)
-	Read(ctx context.Context, lid uuid.UUID) (*TLink, error)
-	// Update(ctx context.Context, lid uuid.UUID, l TLinks) (*uuid.UUID, error)
-	Delete(ctx context.Context, lid uuid.UUID) error
+	Create(ctx context.Context, data TLink) (*uuid.UUID, error)
+	Read(ctx context.Context, id uuid.UUID) (*TLink, error)
+	Update(ctx context.Context, id uuid.UUID, data TLink) error
+	UpdateRet(ctx context.Context, id uuid.UUID, data TLink) (*TLink, error)
+	Delete(ctx context.Context, id uuid.UUID) error
+	DeleteRet(ctx context.Context, id uuid.UUID) (*TLink, error)
 	// Go(ctx context.Context, sl string) error
 	// Stat(ctx context.Context, s string) (chan TLinks, error)
 }
@@ -38,38 +40,57 @@ func NewLinks(store LinksStore) *Links {
 	}
 }
 
-func (link *Links) Create(ctx context.Context, l TLink) (*TLink, error) {
-	id, err := link.store.Create(ctx, l)
+// Create new Link with returning it
+func (link *Links) Create(ctx context.Context, data TLink) (*TLink, error) {
+	id, err := link.store.Create(ctx, data)
 	if err != nil {
 		return nil, fmt.Errorf("create link error: %w", err)
 	}
-	l.ID = *id
-	return &l, nil
+	data.ID = *id
+	return &data, nil
 }
 
-func (link *Links) Read(ctx context.Context, lid uuid.UUID) (*TLink, error) {
-	l, err := link.store.Read(ctx, lid)
+// Return Link by UUID
+func (link *Links) Read(ctx context.Context, id uuid.UUID) (*TLink, error) {
+	data, err := link.store.Read(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("read link error: %w", err)
 	}
-	return l, nil
+	return data, nil
 }
 
-func (link *Links) Update(ctx context.Context, lid uuid.UUID, l TLink) (*TLink, error) {
-	if _, err := link.Delete(ctx, lid); err != nil {
-		return nil, err
-	}
-	lNew, err := link.Create(ctx, l)
+// Update Link by UUID
+func (link *Links) Update(ctx context.Context, id uuid.UUID, data TLink) error {
+	err := link.store.Update(ctx, id, data)
 	if err != nil {
-		return nil, err
+		return fmt.Errorf("update link error: %w", err)
+	}
+	return nil
+}
+
+// Update Link by UUID with returning updated Link
+func (link *Links) UpdateRet(ctx context.Context, id uuid.UUID, data TLink) (*TLink, error) {
+	lNew, err := link.store.UpdateRet(ctx, id, data)
+	if err != nil {
+		return nil, fmt.Errorf("update link error: %w", err)
 	}
 	return lNew, nil
 }
 
-func (link *Links) Delete(ctx context.Context, lid uuid.UUID) (*TLink, error) {
-	l, err := link.store.Read(ctx, lid)
+// Delete Link by UUID
+func (link *Links) Delete(ctx context.Context, lid uuid.UUID) error {
+	err := link.store.Delete(ctx, lid)
+	if err != nil {
+		return fmt.Errorf("delete link error: %w", err)
+	}
+	return nil
+}
+
+// Delete by UUID with returning deleted Link
+func (link *Links) DeleteRet(ctx context.Context, lid uuid.UUID) (*TLink, error) {
+	dLink, err := link.store.DeleteRet(ctx, lid)
 	if err != nil {
 		return nil, fmt.Errorf("delete link error: %w", err)
 	}
-	return l, link.store.Delete(ctx, lid)
+	return dLink, nil
 }
