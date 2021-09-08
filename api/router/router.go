@@ -47,18 +47,18 @@ func NewRouter(hHandler *handler.Handler) *Router {
 }
 
 func (rRouter *Router) Create(w http.ResponseWriter, r *http.Request) {
-	rl := TLink{}
-	if err := render.Bind(r, &rl); err != nil {
+	link := TLink{}
+	if err := render.Bind(r, &link); err != nil {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	l, err := rRouter.hHandler.Create(r.Context(), handler.TLink(rl))
+	hLink, err := rRouter.hHandler.Create(r.Context(), handler.TLink(link))
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
 	}
 	render.Status(r, http.StatusCreated)
-	render.Render(w, r, TLink(l))
+	render.Render(w, r, TLink(hLink))
 }
 
 func (rRouter *Router) Read(w http.ResponseWriter, r *http.Request) {
@@ -69,12 +69,12 @@ func (rRouter *Router) Read(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	l, err := rRouter.hHandler.Read(r.Context(), lid)
+	hLink, err := rRouter.hHandler.Read(r.Context(), lid)
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
 	}
-	render.Render(w, r, TLink(l))
+	render.Render(w, r, TLink(hLink))
 }
 
 func (rRouter *Router) Update(w http.ResponseWriter, r *http.Request) {
@@ -86,17 +86,17 @@ func (rRouter *Router) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rl := TLink{}
-	if err = render.Bind(r, &rl); err != nil {
+	link := TLink{}
+	if err = render.Bind(r, &link); err != nil {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	l, err := rRouter.hHandler.Update(r.Context(), lid, handler.TLink(rl))
+	hLink, err := rRouter.hHandler.Update(r.Context(), lid, handler.TLink(link))
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
 	}
-	render.Render(w, r, TLink(l))
+	render.Render(w, r, TLink(hLink))
 }
 
 func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
@@ -107,13 +107,13 @@ func (rRouter *Router) Delete(w http.ResponseWriter, r *http.Request) {
 		render.Render(w, r, Err400(err))
 		return
 	}
-	l, err := rRouter.hHandler.Delete(r.Context(), lid)
+	hLink, err := rRouter.hHandler.Delete(r.Context(), lid)
 	if err != nil {
 		render.Render(w, r, Err500(err))
 		return
 	}
 	// render.Status(r, http.StatusNoContent)
-	render.Render(w, r, TLink(l))
+	render.Render(w, r, TLink(hLink))
 }
 
 func (rRouter *Router) Status(w http.ResponseWriter, r *http.Request) {
