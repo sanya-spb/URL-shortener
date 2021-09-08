@@ -13,4 +13,4 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 )
 
-require github.com/go-chi/chi v1.5.4 // indirect
+require github.com/go-chi/chi v1.5.4

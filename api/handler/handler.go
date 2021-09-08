@@ -127,3 +127,28 @@ func (hHandler *Handler) Go(ctx context.Context, id string) (string, error) {
 
 	return data, nil
 }
+
+func (hHandler *Handler) Stat(ctx context.Context) (chan TLink, error) {
+	chin, err := hHandler.links.Stat(ctx)
+	if err != nil {
+		return nil, err
+	}
+	chout := make(chan TLink, 100)
+
+	go func() {
+		defer close(chout)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case data, ok := <-chin:
+				if !ok {
+					return
+				}
+				chout <- TLink(data)
+			}
+		}
+	}()
+
+	return chout, nil
+}

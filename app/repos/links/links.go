@@ -14,6 +14,7 @@ type TLink struct {
 	CreatedAt time.Time `json:"created_at"`
 	DeleteAt  time.Time `json:"delete_at"`
 	User      string    `json:"user"`
+	GoCount   int       `json:"go_count"`
 }
 
 type LinksStore interface {
@@ -26,7 +27,7 @@ type LinksStore interface {
 	IsExist(ctx context.Context, id string) (bool, error)
 	GetNextID(ctx context.Context) (string, error)
 	Go(ctx context.Context, id string) (string, error)
-	// Stat(ctx context.Context, s string) (chan TLinks, error)
+	Stat(ctx context.Context) (chan TLink, error)
 }
 
 type Links struct {
@@ -102,4 +103,29 @@ func (link *Links) Go(ctx context.Context, id string) (string, error) {
 		return "", fmt.Errorf("redirect link error: %w", err)
 	}
 	return data, nil
+}
+
+func (link *Links) Stat(ctx context.Context) (chan TLink, error) {
+	chin, err := link.store.Stat(ctx)
+	if err != nil {
+		return nil, err
+	}
+	chout := make(chan TLink, 100)
+
+	go func() {
+		defer close(chout)
+		for {
+			select {
+			case <-ctx.Done():
+				return
+			case data, ok := <-chin:
+				if !ok {
+					return
+				}
+				chout <- data
+			}
+		}
+	}()
+
+	return chout, nil
 }

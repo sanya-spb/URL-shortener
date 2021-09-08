@@ -201,3 +201,31 @@ func (link *Links) Go(ctx context.Context, id string) (string, error) {
 	}
 	return "", sql.ErrNoRows
 }
+
+func (link *Links) Stat(ctx context.Context) (chan links.TLink, error) {
+	select {
+	case <-ctx.Done():
+		return nil, ctx.Err()
+	default:
+	}
+
+	chout := make(chan links.TLink, 100)
+
+	go func() {
+		defer close(chout)
+
+		link.RLock()
+		defer link.RUnlock()
+
+		for _, data := range link.m {
+			select {
+			case <-ctx.Done():
+				return
+			case chout <- data:
+			}
+
+		}
+	}()
+
+	return chout, nil
+}

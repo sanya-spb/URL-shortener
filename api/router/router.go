@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -19,7 +20,23 @@ type Router struct {
 
 type TLink handler.TLink
 
-func (TLink) Bind(r *http.Request) error {
+func (link *TLink) Bind(r *http.Request) error {
+	if link.Name == "" {
+		return errors.New("missing required field: Name")
+	}
+	if link.URL == "" {
+		return errors.New("missing required field: URL")
+	}
+	if link.Descr == "" {
+		return errors.New("missing required field: Descr")
+	}
+
+	link.ID = ""
+	link.CreatedAt = time.Now()
+	link.DeleteAt = time.Now()
+	link.User = ""
+	link.GoCount = 0
+
 	return nil
 }
 func (TLink) Render(w http.ResponseWriter, r *http.Request) error {
@@ -181,16 +198,51 @@ func (rRouter *Router) Go(w http.ResponseWriter, req *http.Request) {
 	http.Redirect(w, req, url, http.StatusTemporaryRedirect)
 }
 
-func (rRouter *Router) Stat(w http.ResponseWriter, req *http.Request) {
-	render.Render(w, req, Err501(errors.New("/stat not implemented")))
-}
-
 func (rRouter *Router) ui(w http.ResponseWriter, req *http.Request) {
-	root := "./data/ui"
+	root := "./data"
 	fs := http.FileServer(http.Dir(root))
-	if _, err := os.Stat(root + req.RequestURI); os.IsNotExist(err) {
+
+	url, err := req.URL.Parse(req.RequestURI)
+	if err != nil {
+		render.Render(w, req, Err500(err))
+		return
+	}
+
+	if _, err := os.Stat(root + url.Path); os.IsNotExist(err) {
 		http.StripPrefix(req.RequestURI, fs).ServeHTTP(w, req)
 	} else {
 		fs.ServeHTTP(w, req)
+	}
+}
+
+func (rRouter *Router) Stat(w http.ResponseWriter, req *http.Request) {
+	chin, err := rRouter.hHandler.Stat(req.Context())
+	if err != nil {
+		render.Render(w, req, Err500(err))
+		return
+	}
+
+	first := true
+	for {
+		select {
+		case <-req.Context().Done():
+			render.Render(w, req, Err500(err))
+			return
+		case data, ok := <-chin:
+			if !ok {
+				if !first {
+					first = false
+					fmt.Fprintln(w, "]}")
+				}
+				return
+			}
+			if first {
+				first = false
+				fmt.Fprintln(w, "{ \"Links\": [")
+			} else {
+				fmt.Fprintln(w, ",")
+			}
+			render.Render(w, req, TLink(data))
+		}
 	}
 }
