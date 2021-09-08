@@ -4,7 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 
+	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/render"
 	"github.com/sanya-spb/URL-shortener/api/handler"
@@ -30,6 +32,13 @@ func NewRouter(hHandler *handler.Handler) *Router {
 	}
 
 	r := chi.NewRouter()
+
+	r.Use(middleware.RequestID)
+	r.Use(middleware.RealIP)
+	r.Use(middleware.Logger)
+	r.Use(middleware.Recoverer)
+	r.Use(middleware.NoCache)
+
 	r.Group(func(rAdm chi.Router) {
 		rAdm.Get("/stat", rRouter.Stat)
 		rAdm.Put("/{id}", rRouter.Update)
@@ -37,11 +46,13 @@ func NewRouter(hHandler *handler.Handler) *Router {
 		rAdm.Delete("/d/{id}", rRouter.Delete)
 		rAdm.Delete("/d/r/{id}", rRouter.DeleteRet)
 		rAdm.Get("/status/{code}", rRouter.StatusCode)
-	}) //.Use(auth.AuthMiddleware) // TODO: заменить на middleware.BasicAuth()
+	})
 	r.Put("/", rRouter.Create)
 	r.Get("/i/{id}", rRouter.Read)
 	r.Get("/status", rRouter.Status)
 	r.Get("/{id}", rRouter.Go)
+
+	r.Get("/ui/*", rRouter.ui)
 
 	rRouter.Handler = r
 	return rRouter
@@ -172,4 +183,14 @@ func (rRouter *Router) Go(w http.ResponseWriter, req *http.Request) {
 
 func (rRouter *Router) Stat(w http.ResponseWriter, req *http.Request) {
 	render.Render(w, req, Err501(errors.New("/stat not implemented")))
+}
+
+func (rRouter *Router) ui(w http.ResponseWriter, req *http.Request) {
+	root := "./data/ui"
+	fs := http.FileServer(http.Dir(root))
+	if _, err := os.Stat(root + req.RequestURI); os.IsNotExist(err) {
+		http.StripPrefix(req.RequestURI, fs).ServeHTTP(w, req)
+	} else {
+		fs.ServeHTTP(w, req)
+	}
 }

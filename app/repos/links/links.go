@@ -94,12 +94,12 @@ func (link *Links) DeleteRet(ctx context.Context, id string) (*TLink, error) {
 	return dLink, nil
 }
 
-//
+// Return URL by ID for redirection
 func (link *Links) Go(ctx context.Context, id string) (string, error) {
 	// return url.URL{ Scheme: "https", Host: r.Host, Path: r.URL.Path, RawQuery: r.URL.RawQuery, }
 	data, err := link.store.Go(ctx, id)
 	if err != nil {
-		return "", fmt.Errorf("go link error: %w", err)
+		return "", fmt.Errorf("redirect link error: %w", err)
 	}
 	return data, nil
 }
