@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Links UI</title>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <link rel="stylesheet" href="/ui/style.css">
 </head>
 <body>
     <h1>URL-shortener</h1>
@@ -31,7 +32,7 @@
             </li>
             <!-- <li>
                 <label for="created_at">created_at:</label><br>
-                <input id="created_at" type="text" name="created_at" value="2021-09-08T23:29:17.066589371+03:00"><br>
+                <input id="created_at" type="text" readonly="readonly" name="created_at" value="2021-09-08T23:29:17.066589371+03:00"><br>
             </li> -->
             <li>
                 <label for="delete_at">delete_at:</label><br>
@@ -39,11 +40,11 @@
             </li>
             <!-- <li>
                 <label for="user">user:</label><br>
-                <input id="user" type="text" name="user" value=""><br>
+                <input id="user" type="text" readonly="readonly" name="user" value=""><br>
             </li>
             <li>
                 <label for="go_count">go_count:</label><br>
-                <input id="go_count" type="text" name="go_count" value="0"><br>
+                <input id="go_count" type="text" readonly="readonly" name="go_count" value="0"><br>
             </li> -->
         </ul>
         <input id="debug" type="checkbox">debug<br>

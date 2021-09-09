@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Links UI</title>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <link rel="stylesheet" href="/ui/style.css">
 </head>
 <body>
     <h1>URL-shortener</h1>
@@ -16,12 +17,12 @@
     </form>
     <h3>Update:</h3>
     <form id="form-upd-link">
-        <input value="update" type="button" onclick="updLink()"><br>
+        <input value="update" type="button" onclick="updLink()">
         <input value="update with result" type="button" onclick="updLinkRes()">
     </form>
     <h3>Delete:</h3>
     <form id="form-del-link">
-        <input value="delete" type="button" onclick="delLink()"><br>
+        <input value="delete" type="button" onclick="delLink()">
         <input value="delete with result" type="button" onclick="delLinkRes()">
     </form>
 <script>
@@ -29,7 +30,7 @@
         $.getJSON('/i/'+ getQueryParam("id"), function(data) {
             var items = [];
             $.each( data, function( key, val ) {
-                if (key=="id") {
+                if (key=="id" || key=="created_at" || key=="user" || key=="go_count") {
                     ro = ' readonly="readonly" '
                 } else {
                     ro = ""
