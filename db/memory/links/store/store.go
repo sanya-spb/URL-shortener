@@ -124,14 +124,14 @@ func (link *Links) Delete(ctx context.Context, id string) error {
 }
 
 func (link *Links) DeleteRet(ctx context.Context, id string) (*links.TLink, error) {
-	link.Lock()
-	defer link.Unlock()
-
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
 	default:
 	}
+
+	link.Lock()
+	defer link.Unlock()
 
 	data, ok := link.m[id]
 	if ok {
@@ -142,14 +142,14 @@ func (link *Links) DeleteRet(ctx context.Context, id string) (*links.TLink, erro
 }
 
 func (link *Links) IsExist(ctx context.Context, id string) (bool, error) {
-	link.Lock()
-	defer link.Unlock()
-
 	select {
 	case <-ctx.Done():
 		return false, ctx.Err()
 	default:
 	}
+
+	link.RLock()
+	defer link.RUnlock()
 
 	_, ok := link.m[id]
 	if ok {
