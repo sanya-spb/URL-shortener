@@ -87,6 +87,4 @@ https://app.swaggerhub.com/apis/sanya-spb/URL-shortener
 * и т.д. (надо пощупать и составить свое мнение, пока что выбирал только по спойлерам)
 
 ### Размещение на hub.docker.com
-https://hub.docker.com/repository/docker/versxisto/urlshortener
-
-## Вопросы на Урок 10 (Консультация по курсовому проекту)
+https://hub.docker.com/r/versxisto/urlshortener
