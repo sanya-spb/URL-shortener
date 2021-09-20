@@ -30,7 +30,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS }}
-          # tags: versxisto/urlshortener:dev-${{ env.COMMIT_SHA }}
-          tags: versxisto/urlshortener:latest
+          # username: ${{ secrets.DOCKER_HUB_USER }}
+          # password: ${{ secrets.DOCKER_HUB_ACCESS }}
+          # tags: ${{ secrets.DOCKER_HUB_USER }}/urlshortener:dev-${{ env.COMMIT_SHA }}
+          tags: ${{ secrets.DOCKER_HUB_USER }}/urlshortener:latest
