@@ -12,7 +12,7 @@ jobs:
       - name: Set short commit hash in env
         run: echo "COMMIT_SHA=$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_ENV
       - name: debug1
-        run: echo "DOCKER_HUB_DEBUG=${{ secrets.DOCKER_HUB_DEBUG }}" >> $GITHUB_ENV
+        run: echo "DOCKER_HUB_DEBUG2=${{ secrets.DOCKER_HUB_DEBUG2 }}" >> $GITHUB_ENV
       - name: Set up QEMU for multi platform image build
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
