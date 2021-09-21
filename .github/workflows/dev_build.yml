@@ -19,8 +19,9 @@ jobs:
         uses: docker/login-action@v1
         with:
           # registry: ghcr.io
-          username: ${{ secrets.DOCKER_HUB_USER }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS }}
+          # username: ${{ secrets.DOCKER_HUB_USER }}
+          # password: ${{ secrets.DOCKER_HUB_ACCESS }}
+          logout: true
       - name: Build and Push docker image
         id: docker_build
         uses: docker/build-push-action@v2
