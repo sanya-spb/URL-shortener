@@ -20,8 +20,8 @@ spec:
   selector:
     app: urlshortener
   sessionAffinity: ClientIP
-  type: NodePort
-  # type: LoadBalancer
+  # type: NodePort
+  type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
