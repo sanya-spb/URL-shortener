@@ -91,5 +91,5 @@ https://hub.docker.com/r/versxisto/urlshortener
 
 ### CI/CD
 Выбрал реализацию через [github actions](https://dev.to/achu1612/ci-cd-for-kubernetes-using-github-actions-and-keel-4b7c)  
-![alt text](./data/images/keel-schema.png "Схема")
+![alt text](./images/keel-schema.png "Схема")
 
