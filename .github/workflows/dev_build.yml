@@ -30,15 +30,4 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USER }}/urlshortener:dev-${{ env.COMMIT_SHA }}
-      - name: Build and Push docker image
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USER }}/urlshortener:latest
-          
+          tags: ${{ secrets.DOCKER_HUB_USER }}/urlshortener:dev-${{ env.COMMIT_SHA }}, ${{ secrets.DOCKER_HUB_USER }}/urlshortener:latest
