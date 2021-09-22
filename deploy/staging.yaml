@@ -10,13 +10,18 @@ metadata:
   name: urlshortener
   namespace: urlshortener-staging
 spec:
+  externalIPs:
+  - 10.200.34.18
+  externalTrafficPolicy: Cluster
   ports:
   - port: 8181
+    protocol: TCP
     targetPort: 8181
   selector:
     app: urlshortener
   sessionAffinity: ClientIP
   type: NodePort
+  # type: LoadBalancer
 ---
 apiVersion: apps/v1
 kind: Deployment
