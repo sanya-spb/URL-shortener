@@ -11,7 +11,7 @@ metadata:
   namespace: urlshortener-staging
 spec:
   externalIPs:
-  - 10.200.34.18
+  - 10.202.34.188
   externalTrafficPolicy: Cluster
   ports:
   - port: 8181
