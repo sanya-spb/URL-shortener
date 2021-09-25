@@ -96,4 +96,4 @@ https://hub.docker.com/r/versxisto/urlshortener
 ### Демонстрация приложения в интернете
 http://go.7bit.xyz:8181/ui/  
   login: admin  
-  passwd: admin (или см. исходник)  
+  passwd: (см. исходник)  
