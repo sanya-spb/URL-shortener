@@ -2,7 +2,7 @@
 name: Development Build
 on:
   push:
-    branches: [ task09 ]
+    branches: [ task09, task10 ]
 jobs:
   build:
     runs-on: ubuntu-20.04

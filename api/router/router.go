@@ -64,7 +64,7 @@ func NewRouter(hHandler *handler.Handler) *Router {
 	r.Use(middleware.NoCache)
 
 	r.Group(func(rAdm chi.Router) {
-		rAdm.Use(middleware.BasicAuth("Auth needed", map[string]string{"admin": "admin"}))
+		rAdm.Use(middleware.BasicAuth("Auth needed", map[string]string{"admin": "TqmodV4MqYcsgqdX"}))
 
 		rAdm.Get("/stat", rRouter.Stat)
 		rAdm.Put("/{id}", rRouter.Update)
